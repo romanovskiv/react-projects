@@ -12,13 +12,13 @@ function Categories() {
         {categories.map((val, index) => {
           return (
             <li
+              key={index}
               onClick={() => onClickCategory(index)}
               className={activeIndex === index ? 'active' : ''}>
               {val}
             </li>
           );
         })}
-        {/*  */}
       </ul>
     </div>
   );
