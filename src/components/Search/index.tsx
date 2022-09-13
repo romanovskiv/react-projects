@@ -24,7 +24,7 @@ const Search: React.FC = () => {
   );
 
   const onChangeInput = React.useCallback(
-    (e: any) => {
+    (e: React.ChangeEvent<HTMLInputElement>) => {
       setValue(e.target.value);
       updateInputValue(e.target.value);
     },
@@ -54,7 +54,7 @@ const Search: React.FC = () => {
       />
       {value && (
         <svg
-          onClick={() => onClearInput()}
+          onClick={onClearInput}
           className={styles.clearIcon}
           xmlns="http://www.w3.org/2000/svg"
           height="512px"

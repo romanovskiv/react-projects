@@ -1,36 +1,39 @@
 import React from 'react';
 import qs from 'qs';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigate } from 'react-router-dom';
 
 import Categories from '../components/Categories';
-import Sort, { sortItems } from '../components/Sort';
+import Sort, { sortItems, SortItemsList } from '../components/Sort';
 import PizzaBlock from '../components/PizzaBlock';
 import Skeleton from '../components/PizzaBlock/Skeleton';
 import Pagination from '../components/Pagination';
 import { setCategoryId, setCurrentPage, setFilters } from '../redux/slices/filterSlice';
 import { fetchPizzas } from '../redux/slices/pizzasSlice';
+import { RootState, useAppDispatch } from '../redux/store';
 
 const Home: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const isSearch = React.useRef(false);
-  const { items, status } = useSelector((state: any) => state.pizzas);
+  const { items, status } = useSelector((state: RootState) => state.pizzas);
   const isMounted = React.useRef(false);
 
-  const { categoryId, sort, currentPage, searchValue } = useSelector((state: any) => state.filter);
+  const { categoryId, sort, currentPage, searchValue } = useSelector(
+    (state: RootState) => state.filter,
+  );
   const sortType = sort.sortProperty;
 
-  const onChangeCategory = (id: number) => {
+  const onChangeCategory = React.useCallback((id: number) => {
     dispatch(setCategoryId(id));
-  };
+  }, []);
+
   const onChangePage = (num: number) => {
     dispatch(setCurrentPage(num));
   };
 
   const getPizzas = async () => {
-    //@ts-ignore
     dispatch(fetchPizzas({ categoryId, sortType, currentPage }));
     window.scrollTo(0, 0);
   };
@@ -57,7 +60,8 @@ const Home: React.FC = () => {
       dispatch(
         setFilters({
           ...params,
-          sort,
+          //@ts-ignore
+          sort: sort,
         }),
       );
       isSearch.current = true;
@@ -74,7 +78,7 @@ const Home: React.FC = () => {
     isSearch.current = false;
   }, [categoryId, sortType, searchValue, currentPage]);
 
-  const skeletons = [...new Array(6)].map((_, id) => <Skeleton key={id} />);
+  const skeletons = [...new Array(8)].map((_, id) => <Skeleton key={id} />);
   const pizzasArr = items
     .filter((obj: any) => {
       if (obj.title.toLowerCase().includes(searchValue.toLowerCase())) {

@@ -1,33 +1,38 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { setSort } from '../redux/slices/filterSlice';
+import { RootState, useAppDispatch } from '../redux/store';
 
-type sortItemsList = {
+export type SortItemsList = {
   name: string;
   sortProperty: string;
 };
 
-export const sortItems: sortItemsList[] = [
+export const sortItems: SortItemsList[] = [
   { name: 'популярности', sortProperty: 'rating' },
   { name: 'цене', sortProperty: 'price' },
   { name: 'алфавиту', sortProperty: 'title' },
 ];
 
-function Sort() {
-  const dispatch = useDispatch();
-  const sort = useSelector((state: any) => state.filter.sort);
+const Sort: React.FC = React.memo(() => {
+  const dispatch = useAppDispatch();
+  const sort = useSelector((state: RootState) => state.filter.sort);
   const sortRef = React.useRef<HTMLDivElement>(null);
 
   const [isOpen, setIsOpen] = React.useState(false);
 
-  const onClickListItem = (obj: sortItemsList) => {
+  const onClickListItem = (obj: any) => {
     dispatch(setSort(obj));
     setIsOpen(false);
   };
 
   React.useEffect(() => {
-    const handleClickOutside = (event: any) => {
-      if (!event.path.includes(sortRef.current)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      const _event = event as MouseEvent & {
+        path: Node[];
+      };
+
+      if (sortRef.current && !_event.path.includes(sortRef.current)) {
         setIsOpen(false);
       }
     };
@@ -71,6 +76,6 @@ function Sort() {
       )}
     </div>
   );
-}
+});
 
 export default Sort;
