@@ -1,12 +1,23 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { addItem } from '../../redux/slices/cartSlice';
-function PizzaBlock({ id, title, price, imageUrl, sizes, types }) {
+
+type PizzaBlockProps = {
+  id: string;
+  price: number;
+  types: number[];
+  sizes: number[];
+  title: string;
+  count: number;
+  imageUrl: string;
+};
+const PizzaBlock: React.FC<PizzaBlockProps> = ({ id, title, price, imageUrl, sizes, types }) => {
   const dispatch = useDispatch();
   const typeNames = ['тонкое', 'традиционное'];
   const [activeType, setActiveType] = React.useState(0);
   const [activeSize, setActiveSize] = React.useState(0);
-  const cartItem = useSelector((state) => state.cart.items.find((obj) => obj.id === id));
+  const cartItem = useSelector((state: any) => state.cart.items.find((obj: any) => obj.id === id));
 
   const addedCount = cartItem ? cartItem.count : 0;
 
@@ -25,8 +36,10 @@ function PizzaBlock({ id, title, price, imageUrl, sizes, types }) {
   return (
     <div className="pizza-block-wraper">
       <div className="pizza-block">
-        <img className="pizza-block__image" src={imageUrl} alt="Pizza" />
-        <h4 className="pizza-block__title">{title}</h4>
+        <Link to={`/pizza/${id}`}>
+          <img className="pizza-block__image" src={imageUrl} alt="Pizza" />
+          <h4 className="pizza-block__title">{title}</h4>
+        </Link>
         <div className="pizza-block__selector">
           <ul>
             {types.map((types) => (
@@ -49,6 +62,7 @@ function PizzaBlock({ id, title, price, imageUrl, sizes, types }) {
             ))}
           </ul>
         </div>
+
         <div className="pizza-block__bottom">
           <div className="pizza-block__price">от {price} ₽</div>
           <button onClick={onClickAdd} className="button button--outline button--add">
@@ -70,6 +84,6 @@ function PizzaBlock({ id, title, price, imageUrl, sizes, types }) {
       </div>
     </div>
   );
-}
+};
 
 export default PizzaBlock;
